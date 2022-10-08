@@ -32,7 +32,7 @@ export const ContactForm = () => {
     
     const handleSubmit = (values, { resetForm }) => {
         if (!contacts.some(contact => contact.name.toLowerCase() === values.name.toLowerCase())) {
-            dispatch(addContact(`${values.name}/${values.number}`));      
+            dispatch(addContact(values.name, values.number));      
         } else {
             alert(`${values.name} is already in contacts`);
         }

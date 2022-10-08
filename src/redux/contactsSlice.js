@@ -12,15 +12,16 @@ const contactsSlice = createSlice({
   initialState: contactsInitialState,
   reducers: {
     addContact: {
-      reducer(state, action) {
-        state.push(action.payload);
+          reducer(state, action) {
+            return [ ...state, action.payload ];
+        // state.push(action.payload);
       },
-      prepare(text) {
+      prepare(name, number) {
         return {
             payload: {
                 id: nanoid(),
-                name: text.split("/")[0],                    
-                number: text.split("/")[1],
+                name: name,                    
+                number: number,
           },
         };
       },
