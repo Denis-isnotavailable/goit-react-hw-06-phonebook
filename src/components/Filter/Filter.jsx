@@ -1,12 +1,16 @@
-import PropTypes from 'prop-types';
+import { useSelector, useDispatch } from "react-redux";
 import { FilterStyled } from "components/Filter/Filter.styled";
+import { setFilter } from "../../redux/filterSlice";
+import { getFilter } from "../../redux/selectors";
 
-export const Filter = ({ onFilterChange, filter }) => {
+
+export const Filter = () => {
+    const dispatch = useDispatch();
+    const filterRedax = useSelector(getFilter);
 
     const handleChange = e => {
-        const { value } = e.target;
-        console.log(value);
-        onFilterChange(value);
+        const { value } = e.target;        
+        dispatch(setFilter(value));        
     };
 
     return (
@@ -15,16 +19,11 @@ export const Filter = ({ onFilterChange, filter }) => {
                 <input
                     type="text"
                     name="filter"
-                    value={filter}
+                    value={filterRedax}
                     onChange={handleChange}
                     pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
                     title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"              
                 />
             </FilterStyled>
         );
-}
-
-Filter.propTypes = {
-    onFilterChange: PropTypes.func.isRequired,
-    filter: PropTypes.string.isRequired,
 }

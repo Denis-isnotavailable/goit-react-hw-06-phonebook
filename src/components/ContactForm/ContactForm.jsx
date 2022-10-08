@@ -1,7 +1,10 @@
-import PropTypes from 'prop-types';
 import { Formik, Field, ErrorMessage } from 'formik';
 import * as Yup from "yup";
+import { useSelector, useDispatch } from "react-redux";
 import { FormStyled } from "components/ContactForm/Form.styled";
+import { handleMouseDown, handleMouseUp } from "../../utils/HandleMouse";
+import { addContact, } from "../../redux/contactsSlice";
+import { getContacts } from "../../redux/selectors";
 
 
 const values = {    
@@ -23,10 +26,17 @@ const PhonebookValidationSchema = Yup.object().shape({
 });
 
 
-export const ContactForm = ({ onSubmit, onMouseDown, onMouseUp }) => {
+export const ContactForm = () => {
+    const dispatch = useDispatch();
+    const contacts = useSelector(getContacts);
     
-    const handleSubmit = (values, { resetForm }) => {        
-        onSubmit(values);
+    const handleSubmit = (values, { resetForm }) => {
+        if (!contacts.some(contact => contact.name.toLowerCase() === values.name.toLowerCase())) {
+            dispatch(addContact(`${values.name}/${values.number}`));      
+        } else {
+            alert(`${values.name} is already in contacts`);
+        }
+        
         resetForm();
     }
 
@@ -36,8 +46,8 @@ export const ContactForm = ({ onSubmit, onMouseDown, onMouseUp }) => {
                     <label>
                         Name
                         <Field
-                        type="text"
-                        name="name" 
+                            type="text"
+                            name="name" 
                         />
                         <ErrorMessage name="name" component="span" />
                     </label>
@@ -45,22 +55,15 @@ export const ContactForm = ({ onSubmit, onMouseDown, onMouseUp }) => {
                     <label>
                         Number
                         <Field
-                        type="tel"
-                        name="number"
+                            type="tel"
+                            name="number"
                         />
                         <ErrorMessage name="number" component="span" />
                     </label>
 
-                    <button type="submit" onMouseDown={onMouseDown} onMouseUp={onMouseUp}>Add contact</button>
+                    <button type="submit" onMouseDown={handleMouseDown} onMouseUp={handleMouseUp}>Add contact</button>
                 </FormStyled>
             </Formik>
             
         )
     }
-
-
-ContactForm.propTypes = {
-    onSubmit: PropTypes.func.isRequired,
-    onMouseDown: PropTypes.func.isRequired,
-    onMouseUp: PropTypes.func.isRequired,
-}
